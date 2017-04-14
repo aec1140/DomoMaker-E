@@ -22,6 +22,12 @@ var handleDomo = function handleDomo(e) {
   return false;
 };
 
+var deleteDomo = function deleteDomo(e) {
+  sendAjax('GET', '/deleteDomo', null, function (data) {
+    this.setState({ data: data.domos });
+  }.bind(this));
+};
+
 var renderDomo = function renderDomo() {
   return React.createElement(
     "form",
@@ -93,6 +99,11 @@ var renderDomoList = function renderDomoList() {
         " Strength: ",
         domo.strength,
         " "
+      ),
+      React.createElement(
+        "button",
+        null,
+        "Delete"
       )
     );
   });
@@ -123,6 +134,7 @@ var setup = function setup(csrf) {
     getInitialState: function getInitialState() {
       return { data: [] };
     },
+    handleDelete: deleteDomo,
     componentDidMount: function componentDidMount() {
       this.loadDomosFromServer();
     },

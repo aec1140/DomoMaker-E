@@ -20,6 +20,12 @@ const handleDomo = (e) => {
   return false;
 };
 
+const deleteDomo = function(e) {
+  sendAjax('GET', '/deleteDomo', null, function(data) {
+    this.setState({ data:data.domos });
+  }.bind(this));
+};
+
 const renderDomo = function() {
   return (
     <form id="domoForm"
@@ -57,6 +63,7 @@ const renderDomoList = function() {
         <h3 className="domoName"> Name: {domo.name} </h3>
         <h3 className="domoAge"> Age: {domo.age} </h3>
         <h3 className="domoStrength"> Strength: {domo.strength} </h3>
+        <button>Delete</button>
       </div>
     );
   });
@@ -83,6 +90,7 @@ const setup = function(csrf) {
     getInitialState: function() {
       return { data: [] };
     },
+    handleDelete: deleteDomo,
     componentDidMount: function() {
       this.loadDomosFromServer();
     },
