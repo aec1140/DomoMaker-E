@@ -21,9 +21,9 @@ const handleDomo = (e) => {
 };
 
 const deleteDomo = function(e) {
-  sendAjax('GET', '/deleteDomo', null, function(data) {
-    this.setState({ data:data.domos });
-  }.bind(this));
+  sendAjax('POST', '/deleteDomo', $("#domoForm").serialize() + '&id=' + e.target.id, function() {
+    domoRenderer.loadDomosFromServer();
+  });
 };
 
 const renderDomo = function() {
@@ -58,15 +58,15 @@ const renderDomoList = function() {
 
   const domoNodes = this.state.data.map(function(domo) {
     return (
-      <div key={domo._id} className="domo">
+      <div key={domo._id} className="domo" onClick={this.handleDelete}>
         <img src="/assets/img/domoface.jpeg" alt="domo face" className="domoFace" />
         <h3 className="domoName"> Name: {domo.name} </h3>
         <h3 className="domoAge"> Age: {domo.age} </h3>
         <h3 className="domoStrength"> Strength: {domo.strength} </h3>
-        <button>Delete</button>
+        <button id={domo._id}>Delete</button>
       </div>
     );
-  });
+  }.bind(this));
 
   return (
     <div className="domoList">
@@ -102,7 +102,7 @@ const setup = function(csrf) {
   );
 
   domoRenderer = ReactDOM.render(
-    <DomoListClass />, document.querySelector("#domos")
+    <DomoListClass csrf={csrf} />, document.querySelector("#domos")
   );
 };
 

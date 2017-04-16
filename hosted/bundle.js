@@ -23,9 +23,9 @@ var handleDomo = function handleDomo(e) {
 };
 
 var deleteDomo = function deleteDomo(e) {
-  sendAjax('GET', '/deleteDomo', null, function (data) {
-    this.setState({ data: data.domos });
-  }.bind(this));
+  sendAjax('POST', '/deleteDomo', $("#domoForm").serialize() + '&id=' + e.target.id, function () {
+    domoRenderer.loadDomosFromServer();
+  });
 };
 
 var renderDomo = function renderDomo() {
@@ -77,7 +77,7 @@ var renderDomoList = function renderDomoList() {
   var domoNodes = this.state.data.map(function (domo) {
     return React.createElement(
       "div",
-      { key: domo._id, className: "domo" },
+      { key: domo._id, className: "domo", onClick: this.handleDelete },
       React.createElement("img", { src: "/assets/img/domoface.jpeg", alt: "domo face", className: "domoFace" }),
       React.createElement(
         "h3",
@@ -102,11 +102,12 @@ var renderDomoList = function renderDomoList() {
       ),
       React.createElement(
         "button",
-        null,
+        { id: domo._id },
         "Delete"
-      )
+      ),
+      React.createElement("input", { type: "hidden", name: "_csrf", value: this.props.csrf })
     );
-  });
+  }.bind(this));
 
   return React.createElement(
     "div",
@@ -143,7 +144,7 @@ var setup = function setup(csrf) {
 
   domoForm = ReactDOM.render(React.createElement(DomoFormClass, { csrf: csrf }), document.querySelector("#makeDomo"));
 
-  domoRenderer = ReactDOM.render(React.createElement(DomoListClass, null), document.querySelector("#domos"));
+  domoRenderer = ReactDOM.render(React.createElement(DomoListClass, { csrf: csrf }), document.querySelector("#domos"));
 };
 
 var getToken = function getToken() {

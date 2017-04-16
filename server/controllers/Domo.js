@@ -46,7 +46,7 @@ const makeDomo = (req, res) => {
 const getDomos = (request, response) => {
   const req = request;
   const res = response;
-
+  
   return Domo.DomoModel.findByOwner(req.session.account._id, (err, docs) => {
     if (err) {
       console.log(err);
@@ -60,14 +60,16 @@ const getDomos = (request, response) => {
 const deleteDomo = (request, response) => {
   const req = request;
   const res = response;
-
-  return Domo.DomoModel.findByIdAndRemove(req.body.id, (err, docs) => {
+  
+  console.dir(req.body);
+  
+  Domo.DomoModel.remove({_id: req.body.id}, function(err) {
     if (err) {
       console.log(err);
       return res.status(400).json({ error: 'An error occurred' });
+    } else {
+      return res.json({ redirect: '/maker' })
     }
-
-    return res.json({ domos: docs });
   });
 };
 
